@@ -16,7 +16,7 @@ permissions and limitations under the License. See accompanying
 LICENSE file.
 -->
 
-Custom version fo YCSB to support the client prioritization functionality of RT-MongoDB ([personal research project](https://gitlab.retis.santannapisa.it/rtnosql/mongo/-/tree/v4.4-rt)) 
+YCSB custom version that supports the client prioritization mechanism of RT-MongoDB ([my personal research project](https://gitlab.retis.santannapisa.it/rtnosql/mongo/-/tree/v4.4-rt)) 
 
 ====================================
 ====================================
