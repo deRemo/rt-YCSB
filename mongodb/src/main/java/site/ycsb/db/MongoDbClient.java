@@ -226,10 +226,9 @@ public class MongoDbClient extends DB {
                 .withWriteConcern(writeConcern);
 
         //set client priority
-        Document cmd = new Document("setClientPriority", 0);
-        mongoClient.getDatabase("admin").runCommand(cmd); 
-
-        System.out.println("mongo client connection created with " + url + " and client priority 0");
+        //Document cmd = new Document("setClientPriority", 0);
+        //mongoClient.getDatabase("admin").runCommand(cmd); 
+        //System.out.println("mongo client connection created with " + url + " and client priority 0");
       } catch (Exception e1) {
         System.err
             .println("Could not initialize MongoDB connection pool for Loader: "
