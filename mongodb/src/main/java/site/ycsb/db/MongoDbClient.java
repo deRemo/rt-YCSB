@@ -170,6 +170,7 @@ public class MongoDbClient extends DB {
     INIT_COUNT.incrementAndGet();
     synchronized (INCLUDE) {
       if (mongoClient != null) {
+        setClientPriority();
         return;
       }
 
@@ -224,11 +225,6 @@ public class MongoDbClient extends DB {
             mongoClient.getDatabase(databaseName)
                 .withReadPreference(readPreference)
                 .withWriteConcern(writeConcern);
-
-        //set client priority
-        //Document cmd = new Document("setClientPriority", 0);
-        //mongoClient.getDatabase("admin").runCommand(cmd); 
-        //System.out.println("mongo client connection created with " + url + " and client priority 0");
       } catch (Exception e1) {
         System.err
             .println("Could not initialize MongoDB connection pool for Loader: "
@@ -237,6 +233,8 @@ public class MongoDbClient extends DB {
         return;
       }
     }
+
+    setClientPriority();
   }
 
   /**
@@ -470,5 +468,16 @@ public class MongoDbClient extends DB {
             new ByteArrayByteIterator(((Binary) entry.getValue()).getData()));
       }
     }
+  }
+
+  // Set client priority
+  protected void setClientPriority() {
+    if (mongoClient == null) {
+      throw new IllegalArgumentException("Did you call setClientPriority() before init() ??");
+    }
+
+    Document cmd = new Document("setClientPriority", 0);
+    mongoClient.getDatabase("admin").runCommand(cmd);
+    System.out.println("mongo client connection created with priority 0");
   }
 }
