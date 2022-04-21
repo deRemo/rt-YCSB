@@ -476,8 +476,16 @@ public class MongoDbClient extends DB {
       throw new IllegalArgumentException("Did you call setClientPriority() before init() ??");
     }
 
-    Document cmd = new Document("setClientPriority", 0);
-    mongoClient.getDatabase("admin").runCommand(cmd);
-    System.out.println("mongo client connection created with priority 0");
+    int prio = Integer.parseInt(getProperties().getProperty("clientpriority", "99"));
+    if (prio >= -20 && prio <= 19) {//UNIX nice levels
+      Document cmd = new Document("setClientPriority", prio);
+
+      try {
+        mongoClient.getDatabase("admin").runCommand(cmd);
+        System.out.println("mongo client connection created with priority "+prio);
+      } catch (Exception e) {
+        System.err.println("setClientPriority() error: "+e.toString());
+      }
+    }
   }
 }
