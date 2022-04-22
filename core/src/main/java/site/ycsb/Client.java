@@ -338,8 +338,12 @@ public final class Client {
 
       st = System.currentTimeMillis();
 
+      int i = 1;
       for (Thread t : threads.keySet()) {
+        t.setName("Client-"+String.format("%02d", i));
         t.start();
+
+        i++;
       }
 
       if (maxExecutionTime > 0) {
