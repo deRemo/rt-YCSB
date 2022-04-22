@@ -41,10 +41,12 @@ public class OneMeasurementRaw extends OneMeasurement {
   class RawDataPoint {
     private final long timestamp;
     private final int value;
+    private final String clientName;
 
     public RawDataPoint(int value) {
       this.timestamp = System.currentTimeMillis();
       this.value = value;
+      this.clientName = Thread.currentThread().getName();
     }
 
     public long timeStamp() {
@@ -53,6 +55,10 @@ public class OneMeasurementRaw extends OneMeasurement {
 
     public int value() {
       return value;
+    }
+
+    public String clientName() {
+      return clientName;
     }
   }
 
@@ -148,8 +154,8 @@ public class OneMeasurementRaw extends OneMeasurement {
         " latency raw data: op, timestamp(ms), latency(us)");
     for (RawDataPoint point : measurements) {
       outputStream.println(
-          String.format("%s,%d,%d", getName(), point.timeStamp(),
-              point.value()));
+          String.format("%s,%d,%d,%s", getName(), point.timeStamp(),
+              point.value(), point.clientName()));
     }
     if (outputStream != System.out) {
       outputStream.close();
