@@ -338,9 +338,14 @@ public final class Client {
 
       st = System.currentTimeMillis();
 
+      //Configure the zero-padding length based on the number of digits in threadcount
+      //(Useful during data analysis to avoid alphanumeric order shenanigans)
+      int digits = String.valueOf(threadcount).length();
+      String zeroPadFormat = "%0"+digits+"d";
+
       int i = 1;
       for (Thread t : threads.keySet()) {
-        t.setName("Client-"+String.format("%02d", i));
+        t.setName("Client-"+String.format(zeroPadFormat, i));
         t.start();
 
         i++;
