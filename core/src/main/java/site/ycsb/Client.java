@@ -345,7 +345,7 @@ public final class Client {
 
       int i = 1;
       for (Thread t : threads.keySet()) {
-        t.setName("Client-"+String.format(zeroPadFormat, i));
+        t.setName(Integer.toString(i));
         t.start();
 
         i++;

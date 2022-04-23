@@ -101,6 +101,8 @@ public class OneMeasurementRaw extends OneMeasurement {
   private LinkedList<RawDataPoint> measurements;
   private long totalLatency = 0;
 
+  private String threadcount;
+
   // A window of stats to print summary for at the next getSummary() call.
   // It's supposed to be a one line summary, so we will just print count and
   // average.
@@ -131,6 +133,7 @@ public class OneMeasurementRaw extends OneMeasurement {
 
     noSummaryStats = Boolean.parseBoolean(props.getProperty(NO_SUMMARY_STATS,
         NO_SUMMARY_STATS_DEFAULT));
+    threadcount = props.getProperty("threadcount", "1");   
 
     measurements = new LinkedList<>();
   }
@@ -150,12 +153,24 @@ public class OneMeasurementRaw extends OneMeasurement {
     // Output raw data points first then print out a summary of percentiles to
     // stdout.
 
+    //Configure the zero-padding length based on the number of digits in threadcount
+    //(Useful during data analysis to avoid alphanumeric order shenanigans)
+    int digits = threadcount.length();
+    String zeroPadFormat = "%0"+digits+"d";
+
     outputStream.println(getName() +
-        " latency raw data: op, timestamp(ms), latency(us)");
+        " latency raw data: op, timestamp(ms), latency(us), client");
     for (RawDataPoint point : measurements) {
+      String clientName;
+      try {
+        clientName = "Client-"+String.format(zeroPadFormat, Integer.parseInt(point.clientName));
+      } catch (NumberFormatException e) {
+        throw new RuntimeException("Failed to format the zero-padding in exportMeasurements()", e);
+      }
+
       outputStream.println(
           String.format("%s,%d,%d,%s", getName(), point.timeStamp(),
-              point.value(), point.clientName()));
+              point.value(), clientName));
     }
     if (outputStream != System.out) {
       outputStream.close();
