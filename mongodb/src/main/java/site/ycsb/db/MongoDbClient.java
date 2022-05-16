@@ -170,7 +170,7 @@ public class MongoDbClient extends DB {
     INIT_COUNT.incrementAndGet();
     synchronized (INCLUDE) {
       if (mongoClient != null) {
-        setClientPriority();
+        //setClientPriority();
         return;
       }
 
@@ -234,7 +234,7 @@ public class MongoDbClient extends DB {
       }
     }
 
-    setClientPriority();
+    //setClientPriority();
   }
 
   /**
@@ -472,6 +472,10 @@ public class MongoDbClient extends DB {
 
   // Set client priority
   protected void setClientPriority() {
+    if (!Thread.currentThread().getName().equals("1")){
+      return;
+    }
+
     if (mongoClient == null) {
       throw new IllegalArgumentException("Did you call setClientPriority() before init() ??");
     }
