@@ -4,7 +4,7 @@
 
 if [ -z $1 ]
 then
-	echo "usage: $0 load|run [nusers]"
+	echo "usage: $0 load|run [nusers] [target_throughput]"
 	exit -1
 fi
 
@@ -22,11 +22,16 @@ else
 	CMD_TYPE="-t"
 fi
 
-NUSERS=63
-
+NUSERS=60
 if [ ! -z "$2" ]
 then
 	NUSERS=$2
+fi
+
+TARGET_THROUGHPUT=""
+if [ ! -z "$3" ]
+then
+	TARGET_THROUGHPUT="-p target=$3"
 fi
 
 #WORKS ON ARMSRV1 ONLY 
@@ -40,6 +45,7 @@ taskset -c 0-70 /usr/local/jdk-16/bin/java -Xms32G -Xmx32G -classpath $HOME/Repo
 -p mongodb.url=mongodb://10.30.3.34:27017/myDb?w=1\&maxPoolSize=300 \
 -p requestdistribution=zipfian                                  \
 -p fieldlengthdistribution=constant                             \
+${TARGET_THROUGHPUT}
 #-p target=20000
 #-p clientpriority=-20                                          \
 #-p target=15000                                               
