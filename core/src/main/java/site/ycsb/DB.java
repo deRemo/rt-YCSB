@@ -70,6 +70,13 @@ public abstract class DB {
   public void init() throws DBException {
   }
 
+   /**
+   * Initialize any state for this DB after init().
+   * Called once per DB instance; there is one DB instance per client thread.
+   */
+  public void postInit() throws DBException {
+  }
+
   /**
    * Cleanup any state for this DB.
    * Called once per DB instance; there is one DB instance per client thread.

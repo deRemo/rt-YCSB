@@ -109,6 +109,12 @@ public class DBWrapper extends DB {
     }
   }
 
+  //Simply call the postInit method of DB
+  @Override
+  public void postInit() throws DBException{
+    db.postInit();
+  }
+
   /**
    * Cleanup any state for this DB.
    * Called once per DB instance; there is one DB instance per client thread.

@@ -95,6 +95,15 @@ public class ClientThread implements Runnable {
       return;
     }
 
+    //Added by me
+    try {
+      db.postInit();
+    } catch (DBException e) {
+      e.printStackTrace();
+      e.printStackTrace(System.out);
+      return;
+    }
+
     try {
       workloadstate = workload.initThread(props, threadid, threadcount);
     } catch (WorkloadException e) {

@@ -170,7 +170,6 @@ public class MongoDbClient extends DB {
     INIT_COUNT.incrementAndGet();
     synchronized (INCLUDE) {
       if (mongoClient != null) {
-        //setClientPriority();
         return;
       }
 
@@ -233,8 +232,16 @@ public class MongoDbClient extends DB {
         return;
       }
     }
+  }
 
-    //setClientPriority();
+  /**
+   * Initialize any state for this DB after init(). Called once per DB instance; there is one
+   * DB instance per client thread.
+   */
+
+  @Override
+  public void postInit() throws DBException {
+    setClientPriority();
   }
 
   /**
@@ -472,9 +479,11 @@ public class MongoDbClient extends DB {
 
   // Set client priority
   protected void setClientPriority() {
-    if (!Thread.currentThread().getName().equals("1")){
+    System.out.println("setClientPriority called by thread "+Thread.currentThread().getName());
+    //Un-comment if you want to prioritize the first ycsb thread only
+    /*if (!Thread.currentThread().getName().equals("1")){
       return;
-    }
+    }*/
 
     if (mongoClient == null) {
       throw new IllegalArgumentException("Did you call setClientPriority() before init() ??");
