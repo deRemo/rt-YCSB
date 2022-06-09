@@ -241,7 +241,11 @@ public class MongoDbClient extends DB {
 
   @Override
   public void postInit() throws DBException {
-    setClientPriority();
+    String prioProp = getProperties().getProperty("clientpriority");
+
+    if (prioProp != null && !prioProp.isEmpty()) {
+      setClientPriority(Integer.parseInt(prioProp));
+    }
   }
 
   /**
@@ -478,18 +482,9 @@ public class MongoDbClient extends DB {
   }
 
   // Set client priority
-  protected void setClientPriority() {
+  protected void setClientPriority(int prio) {
     System.out.println("setClientPriority called by thread "+Thread.currentThread().getName());
-    //Un-comment if you want to prioritize the first ycsb thread only
-    /*if (!Thread.currentThread().getName().equals("1")){
-      return;
-    }*/
 
-    if (mongoClient == null) {
-      throw new IllegalArgumentException("Did you call setClientPriority() before init() ??");
-    }
-
-    int prio = Integer.parseInt(getProperties().getProperty("clientpriority", "99"));
     if (prio >= -20 && prio <= 19) {//UNIX nice levels
       Document cmd = new Document("setClientPriority", prio);
 
