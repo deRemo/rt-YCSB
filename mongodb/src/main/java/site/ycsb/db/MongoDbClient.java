@@ -241,7 +241,7 @@ public class MongoDbClient extends DB {
 
   @Override
   public void postInit() throws DBException {
-    String prioProp = getProperties().getProperty("clientpriority");
+    String prioProp = getProperties().getProperty(Thread.currentThread().getName());
 
     if (prioProp != null && !prioProp.isEmpty()) {
       setClientPriority(Integer.parseInt(prioProp));
@@ -483,7 +483,7 @@ public class MongoDbClient extends DB {
 
   // Set client priority
   protected void setClientPriority(int prio) {
-    System.out.println("setClientPriority called by thread "+Thread.currentThread().getName());
+    System.out.println("setClientPriority("+prio+") called by thread "+Thread.currentThread().getName());
 
     if (prio >= -20 && prio <= 19) {//UNIX nice levels
       Document cmd = new Document("setClientPriority", prio);

@@ -273,6 +273,22 @@ public final class Client {
     }
   }
 
+  /**
+   * Assign the priority counter.
+   * @param props property object
+   * @param key key
+   * @return priority value if exists, 0 otherwise
+   */
+  private static int assignPrioCnt(Properties props, String key){
+    String prioProp = props.getProperty(key);
+
+    if (prioProp != null) {
+      return Integer.parseInt(prioProp);
+    } else {
+      return 0;
+    }
+  }
+
   @SuppressWarnings("unchecked")
   public static void main(String[] args) {
     Properties props = parseArguments(args);
@@ -294,6 +310,11 @@ public final class Client {
       targetperthreadperms = targetperthread / 1000.0;
     }
 
+    // set client priority counters
+    int highPrioCnt = assignPrioCnt(props, "highpriority");
+    int normPrioCnt = assignPrioCnt(props, "normalpriority");
+    int lowPrioCnt  = assignPrioCnt(props, "lowpriority");
+    
     Thread warningthread = setupWarningThread();
     warningthread.start();
 
@@ -338,16 +359,23 @@ public final class Client {
 
       st = System.currentTimeMillis();
 
-      //Configure the zero-padding length based on the number of digits in threadcount
-      //(Useful during data analysis to avoid alphanumeric order shenanigans)
-      int digits = String.valueOf(threadcount).length();
-      String zeroPadFormat = "%0"+digits+"d";
-
       int i = 1;
       for (Thread t : threads.keySet()) {
         t.setName(Integer.toString(i));
-        t.start();
+        
+        //assign priority to each client thread
+        if (highPrioCnt > 0) {
+          highPrioCnt--;
+          props.setProperty(Integer.toString(i), "-20");
+        } else if (normPrioCnt > 0) {
+          normPrioCnt--;
+          props.setProperty(Integer.toString(i), "0");
+        } else if (lowPrioCnt > 0) {
+          lowPrioCnt--;
+          props.setProperty(Integer.toString(i), "19");
+        }
 
+        t.start();
         i++;
       }
 
