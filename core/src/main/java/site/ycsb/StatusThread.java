@@ -169,9 +169,14 @@ public class StatusThread extends Thread {
 
     if (totalops != 0) {
       msg.append(d.format(curthroughput)).append(" current ops/sec; ");
+    } else {
+      msg.append(" 0 current ops/sec; ");
     }
+
     if (todoops != 0) {
       msg.append("est completion in ").append(RemainingFormatter.format(estremaining));
+    } else {
+      msg.append("completed!");
     }
 
     msg.append(Measurements.getMeasurements().getSummary());
